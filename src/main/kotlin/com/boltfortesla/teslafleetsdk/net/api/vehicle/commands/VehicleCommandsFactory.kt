@@ -60,6 +60,7 @@ internal class VehicleCommandsFactory(
       )
 
     return VehicleCommandsImpl(
+      vin,
       vehicleTag,
       clientPublicKey,
       sharedSecretFetcher,

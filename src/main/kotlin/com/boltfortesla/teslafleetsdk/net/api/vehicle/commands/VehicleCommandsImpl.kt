@@ -128,6 +128,7 @@ import retrofit2.HttpException
  * @param clientPublicKey the Tesla Developer Application public key
  */
 internal class VehicleCommandsImpl(
+  private val vin: String,
   private val vehicleTag: String,
   private val clientPublicKey: ByteArray,
   private val sharedSecretFetcher: SharedSecretFetcher,
@@ -1153,11 +1154,11 @@ internal class VehicleCommandsImpl(
   private suspend fun ensureSessionStarted(domain: Domain): SessionInfo? {
     Log.d("Starting session for $domain if needed")
     handshakeMutex.withLock {
-      val sessionInfo = sessionInfoRepository.get(vehicleTag, domain)
+      val sessionInfo = sessionInfoRepository.get(vin, domain)
       return if (useCommandProtocol && sessionInfo == null) {
         return try {
-          handshaker.performHandshake(vehicleTag, domain, sharedSecretFetcher).also {
-            sessionInfoRepository.set(vehicleTag, domain, it)
+          handshaker.performHandshake(vin, domain, sharedSecretFetcher).also {
+            sessionInfoRepository.set(vin, domain, it)
           }
         } catch (httpException: HttpException) {
           if (httpException.code() == 422) {

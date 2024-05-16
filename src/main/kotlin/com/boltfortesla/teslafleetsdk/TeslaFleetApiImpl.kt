@@ -102,11 +102,11 @@ internal class TeslaFleetApiImpl(
 
   override fun vehicleCommands(
     vin: String,
-    vehicleTag: String,
     sharedSecretFetcher: SharedSecretFetcher,
     commandProtocolSupported: Boolean,
     region: Region,
     accessToken: String,
+    vehicleTag: String,
     retryConfig: RetryConfig,
     clientBuilder: OkHttpClient.Builder,
   ): VehicleCommands =
