@@ -53,7 +53,7 @@ internal class NetworkExecutorImpl(
      * A list of HTTP status codes that are considered retryable. Any other status code will not
      * result in a retry.
      */
-    val RETRYABLE_STATUS_CODES = listOf(408, 429, 503, 504)
+    val RETRYABLE_STATUS_CODES = listOf(408, 503, 504)
     val RETRYABLE_MESSAGE_FAULTS =
       listOf(
         MessageFault_E.MESSAGEFAULT_ERROR_BUSY,
