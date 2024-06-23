@@ -118,7 +118,7 @@ class VehicleEndpointsImplTest {
   fun getEligibleSubscriptions() = runTest {
     server.enqueue(MockResponse().setResponseCode(200).setBody(ELIGIBLE_SUBSCRIPTIONS_RESPONSE))
 
-    val response = vehicleEndpoints.getEligibleSubscriptions()
+    val response = vehicleEndpoints.getEligibleSubscriptions(Constants.VIN)
 
     val request = server.takeRequest()
     assertThat(request.path)
@@ -145,7 +145,7 @@ class VehicleEndpointsImplTest {
   fun getEligibleUpgrades() = runTest {
     server.enqueue(MockResponse().setResponseCode(200).setBody(ELIGIBLE_UPGRADES_RESPONSE))
 
-    val response = vehicleEndpoints.getEligibleUpgrades()
+    val response = vehicleEndpoints.getEligibleUpgrades(Constants.VIN)
 
     val request = server.takeRequest()
     assertThat(request.path)
@@ -360,7 +360,7 @@ class VehicleEndpointsImplTest {
   fun getOptions() = runTest {
     server.enqueue(MockResponse().setResponseCode(200).setBody(OPTIONS_RESPONSE))
 
-    val response = vehicleEndpoints.getOptions()
+    val response = vehicleEndpoints.getOptions(Constants.VIN)
 
     val request = server.takeRequest()
     assertThat(request.path).isEqualTo("/api/1/dx/vehicles/options?vin=${Constants.VIN}")
@@ -1010,7 +1010,7 @@ class VehicleEndpointsImplTest {
   fun getWarrantyDetails() = runTest {
     server.enqueue(MockResponse().setResponseCode(200).setBody(WARRANTY_DETAILS_RESPONSE))
 
-    val response = vehicleEndpoints.getWarrantyDetails()
+    val response = vehicleEndpoints.getWarrantyDetails(Constants.VIN)
 
     val request = server.takeRequest()
     assertThat(request.path).isEqualTo("/api/1/dx/warranty/details?vin=${Constants.VIN}")

@@ -114,7 +114,7 @@ interface TeslaFleetApi {
   /**
    * API for commands that can be executed on a vehicle
    *
-   * @param vin the VIN of the vehicle to send commands to
+   * @param vin the VIN of the vehicle
    * @param sharedSecretFetcher an implementation of [SharedSecretFetcher]
    * @param commandProtocolSupported if true, the Vehicle Command Protocol be used. If the Vehicle
    *   with VIN [vin] does NOT support the Command Protocol (a 422 is returned by the API), the
@@ -122,6 +122,7 @@ interface TeslaFleetApi {
    *   (useful for Pre-2021 Model S/X vehicles to avoid an extra API call).
    * @param region the [Region] the API calls should be made to
    * @param accessToken Fleet API access token. Will be added to all requests
+   * @param vehicleTag the VIN or id field of the vehicle to send commands to
    * @param retryConfig a [RetryConfig] for network calls made with this API
    * @param clientBuilder a pre-configured [OkHttpClient.Builder] that will be used when making
    *   network requests
@@ -132,6 +133,7 @@ interface TeslaFleetApi {
     commandProtocolSupported: Boolean,
     region: Region,
     accessToken: String,
+    vehicleTag: String = vin,
     retryConfig: RetryConfig = RetryConfig(),
     clientBuilder: OkHttpClient.Builder = OkHttpClient.Builder(),
   ): VehicleCommands
@@ -139,7 +141,7 @@ interface TeslaFleetApi {
   /**
    * API for actions related to a specific vehicle
    *
-   * @param vin the VIN of the vehicle to make requests about
+   * @param vehicleTag the VIN or id field of the vehicle to make requests about
    * @param region the [Region] the API calls should be made to
    * @param accessToken Fleet API access token. Will be added to all requests
    * @param retryConfig a [RetryConfig] for network calls made with this API
@@ -147,7 +149,7 @@ interface TeslaFleetApi {
    *   network requests
    */
   fun vehicleEndpoints(
-    vin: String,
+    vehicleTag: String,
     region: Region,
     accessToken: String,
     retryConfig: RetryConfig = RetryConfig(),

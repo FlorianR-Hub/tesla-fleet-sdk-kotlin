@@ -124,11 +124,12 @@ import retrofit2.HttpException
 /**
  * Implementation of [VehicleCommands].
  *
- * @param vin the VIN of the vehicle to be commanded.
+ * @param vehicleTag the VIN or id field of the vehicle to be commanded.
  * @param clientPublicKey the Tesla Developer Application public key
  */
 internal class VehicleCommandsImpl(
   private val vin: String,
+  private val vehicleTag: String,
   private val clientPublicKey: ByteArray,
   private val sharedSecretFetcher: SharedSecretFetcher,
   commandProtocolSupported: Boolean,
@@ -152,7 +153,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.actuateTrunk(vin, ActuateTrunkRequest(trunk.name.lowercase()))
+      vehicleCommandsApi.actuateTrunk(vehicleTag, ActuateTrunkRequest(trunk.name.lowercase()))
     }
   }
 
@@ -164,7 +165,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.adjustVolume(vin, AdjustVolumeRequest(volume))
+      vehicleCommandsApi.adjustVolume(vehicleTag, AdjustVolumeRequest(volume))
     }
   }
 
@@ -174,7 +175,7 @@ internal class VehicleCommandsImpl(
         vehicleAction = vehicleAction { hvacAutoAction = hvacAutoAction { powerOn = true } }
       }
     ) {
-      vehicleCommandsApi.startAutoConditioning(vin)
+      vehicleCommandsApi.startAutoConditioning(vehicleTag)
     }
   }
 
@@ -184,7 +185,7 @@ internal class VehicleCommandsImpl(
         vehicleAction = vehicleAction { hvacAutoAction = hvacAutoAction { powerOn = false } }
       }
     ) {
-      vehicleCommandsApi.stopAutoConditioning(vin)
+      vehicleCommandsApi.stopAutoConditioning(vehicleTag)
     }
   }
 
@@ -196,7 +197,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.cancelSoftwareUpdate(vin)
+      vehicleCommandsApi.cancelSoftwareUpdate(vehicleTag)
     }
   }
 
@@ -208,7 +209,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.chargeMaxRange(vin)
+      vehicleCommandsApi.chargeMaxRange(vehicleTag)
     }
   }
 
@@ -218,7 +219,7 @@ internal class VehicleCommandsImpl(
         closureMoveRequest = closureMoveRequest { chargePort = CLOSURE_MOVE_TYPE_CLOSE }
       }
     ) {
-      vehicleCommandsApi.closeChargePortDoor(vin)
+      vehicleCommandsApi.closeChargePortDoor(vehicleTag)
     }
   }
 
@@ -228,7 +229,7 @@ internal class VehicleCommandsImpl(
         closureMoveRequest = closureMoveRequest { chargePort = CLOSURE_MOVE_TYPE_OPEN }
       }
     ) {
-      vehicleCommandsApi.openChargePortDoor(vin)
+      vehicleCommandsApi.openChargePortDoor(vehicleTag)
     }
   }
 
@@ -240,7 +241,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.chargeStandard(vin)
+      vehicleCommandsApi.chargeStandard(vehicleTag)
     }
   }
 
@@ -252,7 +253,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.startCharging(vin)
+      vehicleCommandsApi.startCharging(vehicleTag)
     }
   }
 
@@ -264,30 +265,30 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.stopCharging(vin)
+      vehicleCommandsApi.stopCharging(vehicleTag)
     }
   }
 
   override suspend fun adminClearPinToDrive(): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
-    return executeCommand(action = null) { vehicleCommandsApi.clearPinToDriveAdmin(vin) }
+    return executeCommand(action = null) { vehicleCommandsApi.clearPinToDriveAdmin(vehicleTag) }
   }
 
   override suspend fun lockDoors(): Result<VehicleCommandResponse> {
     return executeCommand(unsignedMessage { rKEAction = RKE_ACTION_LOCK }) {
-      vehicleCommandsApi.lockDoors(vin)
+      vehicleCommandsApi.lockDoors(vehicleTag)
     }
   }
 
   override suspend fun unlockDoors(): Result<VehicleCommandResponse> {
     return executeCommand(unsignedMessage { rKEAction = RKE_ACTION_UNLOCK }) {
-      vehicleCommandsApi.unlockDoors(vin)
+      vehicleCommandsApi.unlockDoors(vehicleTag)
     }
   }
 
   override suspend fun eraseUserData(): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
-    return executeCommand(action = null) { vehicleCommandsApi.eraseUserData(vin) }
+    return executeCommand(action = null) { vehicleCommandsApi.eraseUserData(vehicleTag) }
   }
 
   override suspend fun flashLights(): Result<VehicleCommandResponse> {
@@ -298,7 +299,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.flashLights(vin)
+      vehicleCommandsApi.flashLights(vehicleTag)
     }
   }
 
@@ -312,7 +313,7 @@ internal class VehicleCommandsImpl(
         vehicleAction = vehicleAction { guestModeAction = guestMode { guestModeActive = enable } }
       }
     ) {
-      vehicleCommandsApi.setGuestMode(vin, GuestModeRequest(enable = enable))
+      vehicleCommandsApi.setGuestMode(vehicleTag, GuestModeRequest(enable = enable))
     }
   }
 
@@ -324,7 +325,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.honkHorn(vin)
+      vehicleCommandsApi.honkHorn(vehicleTag)
     }
   }
 
@@ -332,7 +333,7 @@ internal class VehicleCommandsImpl(
     return executeCommand(
       action { vehicleAction = vehicleAction { mediaNextFavorite = mediaNextFavorite {} } }
     ) {
-      vehicleCommandsApi.nextFavorite(vin)
+      vehicleCommandsApi.nextFavorite(vehicleTag)
     }
   }
 
@@ -340,7 +341,7 @@ internal class VehicleCommandsImpl(
     return executeCommand(
       action { vehicleAction = vehicleAction { mediaNextTrack = mediaNextTrack {} } }
     ) {
-      vehicleCommandsApi.nextTrack(vin)
+      vehicleCommandsApi.nextTrack(vehicleTag)
     }
   }
 
@@ -348,7 +349,7 @@ internal class VehicleCommandsImpl(
     return executeCommand(
       action { vehicleAction = vehicleAction { mediaPreviousFavorite = mediaPreviousFavorite {} } }
     ) {
-      vehicleCommandsApi.previousFavorite(vin)
+      vehicleCommandsApi.previousFavorite(vehicleTag)
     }
   }
 
@@ -356,7 +357,7 @@ internal class VehicleCommandsImpl(
     return executeCommand(
       action { vehicleAction = vehicleAction { mediaPreviousTrack = mediaPreviousTrack {} } }
     ) {
-      vehicleCommandsApi.previousTrack(vin)
+      vehicleCommandsApi.previousTrack(vehicleTag)
     }
   }
 
@@ -364,7 +365,7 @@ internal class VehicleCommandsImpl(
     return executeCommand(
       action { vehicleAction = vehicleAction { mediaPlayAction = mediaPlayAction {} } }
     ) {
-      vehicleCommandsApi.toggleMediaPlayback(vin)
+      vehicleCommandsApi.toggleMediaPlayback(vehicleTag)
     }
   }
 
@@ -374,7 +375,7 @@ internal class VehicleCommandsImpl(
         vehicleAction = vehicleAction { mediaUpdateVolume = mediaUpdateVolume { volumeDelta = -1 } }
       }
     ) {
-      vehicleCommandsApi.decreaseMediaVolume(vin)
+      vehicleCommandsApi.decreaseMediaVolume(vehicleTag)
     }
   }
 
@@ -384,7 +385,7 @@ internal class VehicleCommandsImpl(
         vehicleAction = vehicleAction { mediaUpdateVolume = mediaUpdateVolume { volumeDelta = 1 } }
       }
     ) {
-      vehicleCommandsApi.increaseMediaVolume(vin)
+      vehicleCommandsApi.increaseMediaVolume(vehicleTag)
     }
   }
 
@@ -396,7 +397,7 @@ internal class VehicleCommandsImpl(
     // Does not require Command Protocol
     return executeCommand(action = null) {
       vehicleCommandsApi.shareUrl(
-        vin,
+        vehicleTag,
         ShareRequest(value = Value(url), locale = locale, timestampMs = timestampMs),
       )
     }
@@ -410,7 +411,7 @@ internal class VehicleCommandsImpl(
     // Does not require Command Protocol
     return executeCommand(action = null) {
       vehicleCommandsApi.startNavigationToCoordinates(
-        vin,
+        vehicleTag,
         NavigationGpsRequest(latitude, longitude, order),
       )
     }
@@ -424,7 +425,7 @@ internal class VehicleCommandsImpl(
     // Does not require Command Protocol
     return executeCommand(action = null) {
       vehicleCommandsApi.sendNavigationLocation(
-        vin,
+        vehicleTag,
         ShareRequest(value = Value(destination), locale = locale, timestampMs = timestampMs),
       )
     }
@@ -437,7 +438,7 @@ internal class VehicleCommandsImpl(
     // Does not require Command Protocol
     return executeCommand(action = null) {
       vehicleCommandsApi.startNavigationToSupercharger(
-        vin,
+        vehicleTag,
         NavigationSuperchargerRequest(id, order),
       )
     }
@@ -466,7 +467,7 @@ internal class VehicleCommandsImpl(
       }
     ) {
       vehicleCommandsApi.setAutoSeatClimate(
-        vin,
+        vehicleTag,
         RemoteAutoSeatClimateRequest(seat.value, autoClimateOn = autoClimateOn),
       )
     }
@@ -490,7 +491,7 @@ internal class VehicleCommandsImpl(
         }
     ) {
       vehicleCommandsApi.setAutoSteeringWheelHeat(
-        vin,
+        vehicleTag,
         RemoteAutoSteeringWheelHeatClimateRequest(on = on),
       )
     }
@@ -499,7 +500,7 @@ internal class VehicleCommandsImpl(
   override suspend fun remoteBoombox(sound: Int): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
     return executeCommand(action = null) {
-      vehicleCommandsApi.playBoomboxSound(vin, RemoteBoomboxRequest(sound))
+      vehicleCommandsApi.playBoomboxSound(vehicleTag, RemoteBoomboxRequest(sound))
     }
   }
 
@@ -519,7 +520,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setSeatCooler(vin, RemoteSeatCoolerRequest(seat.value, level.value))
+      vehicleCommandsApi.setSeatCooler(vehicleTag, RemoteSeatCoolerRequest(seat.value, level.value))
     }
   }
 
@@ -554,13 +555,13 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setSeatHeater(vin, RemoteSeatHeaterRequest(seat.value, level.value))
+      vehicleCommandsApi.setSeatHeater(vehicleTag, RemoteSeatHeaterRequest(seat.value, level.value))
     }
   }
 
   override suspend fun remoteStart(): Result<VehicleCommandResponse> {
     return executeCommand(unsignedMessage { rKEAction = RKE_ACTION_REMOTE_DRIVE }) {
-      vehicleCommandsApi.remoteStart(vin)
+      vehicleCommandsApi.remoteStart(vehicleTag)
     }
   }
 
@@ -572,7 +573,7 @@ internal class VehicleCommandsImpl(
       action = null
     ) {
       vehicleCommandsApi.setSteeringWheelHeatLevel(
-        vin,
+        vehicleTag,
         RemoteSteeringWheelHeatLevelRequest(level.value),
       )
     }
@@ -590,7 +591,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setSteeringWheelHeater(vin, RemoteSteeringWheelHeaterRequest(on = on))
+      vehicleCommandsApi.setSteeringWheelHeater(vehicleTag, RemoteSteeringWheelHeaterRequest(on = on))
     }
   }
 
@@ -602,7 +603,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.resetPinToDrivePin(vin)
+      vehicleCommandsApi.resetPinToDrivePin(vehicleTag)
     }
   }
 
@@ -614,7 +615,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.resetValetPin(vin)
+      vehicleCommandsApi.resetValetPin(vehicleTag)
     }
   }
 
@@ -628,7 +629,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.scheduleSoftwareUpdate(vin, ScheduleSoftwareUpdateRequest(offsetSeconds))
+      vehicleCommandsApi.scheduleSoftwareUpdate(vehicleTag, ScheduleSoftwareUpdateRequest(offsetSeconds))
     }
   }
 
@@ -652,7 +653,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setBioweaponMode(vin, SetBioweaponModeRequest(on, manualOverride))
+      vehicleCommandsApi.setBioweaponMode(vehicleTag, SetBioweaponModeRequest(on, manualOverride))
     }
   }
 
@@ -677,7 +678,7 @@ internal class VehicleCommandsImpl(
       }
     ) {
       vehicleCommandsApi.setCabinOverheatProtection(
-        vin,
+        vehicleTag,
         SetCabinOverheatProtectionRequest(on, fanOnly),
       )
     }
@@ -691,7 +692,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setChargeLimit(vin, SetChargeLimitRequest(chargePercent))
+      vehicleCommandsApi.setChargeLimit(vehicleTag, SetChargeLimitRequest(chargePercent))
     }
   }
 
@@ -703,7 +704,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setChargingAmps(vin, SetChargingAmpsRequest(chargingAmps))
+      vehicleCommandsApi.setChargingAmps(vehicleTag, SetChargingAmpsRequest(chargingAmps))
     }
   }
 
@@ -717,7 +718,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setClimateKeeperMode(vin, SetClimateKeeperModeRequest(mode.value))
+      vehicleCommandsApi.setClimateKeeperMode(vehicleTag, SetClimateKeeperModeRequest(mode.value))
     }
   }
 
@@ -731,7 +732,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setCopTemp(vin, SetCopTempRequest(temperature.value))
+      vehicleCommandsApi.setCopTemp(vehicleTag, SetCopTempRequest(temperature.value))
     }
   }
 
@@ -750,7 +751,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setPinToDrive(vin, SetPinToDriveRequest(enable, pin))
+      vehicleCommandsApi.setPinToDrive(vehicleTag, SetPinToDriveRequest(enable, pin))
     }
   }
 
@@ -775,7 +776,7 @@ internal class VehicleCommandsImpl(
       }
     ) {
       vehicleCommandsApi.setPreconditioningMax(
-        vin,
+        vehicleTag,
         SetPreconditioningMaxRequest(on, manualOverride),
       )
     }
@@ -802,7 +803,7 @@ internal class VehicleCommandsImpl(
       }
     ) {
       vehicleCommandsApi.setScheduledCharging(
-        vin,
+        vehicleTag,
         SetScheduledChargingRequest(on, minutesAfterMidnight),
       )
     }
@@ -863,7 +864,7 @@ internal class VehicleCommandsImpl(
       }
     ) {
       vehicleCommandsApi.setScheduledDeparture(
-        vin,
+        vehicleTag,
         SetScheduledDepartureRequest(
           on,
           minutesAfterMidnight,
@@ -889,7 +890,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setSentryMode(vin, SetSentryModeRequest(on))
+      vehicleCommandsApi.setSentryMode(vehicleTag, SetSentryModeRequest(on))
     }
   }
 
@@ -919,7 +920,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setTemps(vin, SetTempsRequest(driverTempC, passengerTempC))
+      vehicleCommandsApi.setTemps(vehicleTag, SetTempsRequest(driverTempC, passengerTempC))
     }
   }
 
@@ -938,7 +939,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setValetMode(vin, SetValetModeRequest(on, password = null))
+      vehicleCommandsApi.setValetMode(vehicleTag, SetValetModeRequest(on, password = null))
     }
   }
 
@@ -950,7 +951,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.setVehicleName(vin, SetVehicleNameRequest(name))
+      vehicleCommandsApi.setVehicleName(vehicleTag, SetVehicleNameRequest(name))
     }
   }
 
@@ -965,7 +966,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.speedLimitActivate(vin, SpeedLimitActivateRequest(pin))
+      vehicleCommandsApi.speedLimitActivate(vehicleTag, SpeedLimitActivateRequest(pin))
     }
   }
 
@@ -977,13 +978,13 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.speedLimitClearPin(vin, SpeedLimitClearPinRequest(pin))
+      vehicleCommandsApi.speedLimitClearPin(vehicleTag, SpeedLimitClearPinRequest(pin))
     }
   }
 
   override suspend fun adminClearSpeedLimitPin(): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
-    return executeCommand(action = null) { vehicleCommandsApi.speedLimitClearPinAdmin(vin) }
+    return executeCommand(action = null) { vehicleCommandsApi.speedLimitClearPinAdmin(vehicleTag) }
   }
 
   override suspend fun deactivateSpeedLimit(pin: String): Result<VehicleCommandResponse> {
@@ -997,7 +998,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.speedLimitDeactivate(vin, SpeedLimitDeactivateRequest(pin))
+      vehicleCommandsApi.speedLimitDeactivate(vehicleTag, SpeedLimitDeactivateRequest(pin))
     }
   }
 
@@ -1009,7 +1010,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.speedLimitSetLimit(vin, SpeedLimitSetLimitRequest(limitMph))
+      vehicleCommandsApi.speedLimitSetLimit(vehicleTag, SpeedLimitSetLimitRequest(limitMph))
     }
   }
 
@@ -1029,14 +1030,14 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.sunRoofControl(vin, SunRoofControlRequest(state.name.lowercase()))
+      vehicleCommandsApi.sunRoofControl(vehicleTag, SunRoofControlRequest(state.name.lowercase()))
     }
   }
 
   override suspend fun takeDrivenote(note: String): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
     return executeCommand(action = null) {
-      vehicleCommandsApi.takeDrivenote(vin, TakeDrivenoteRequest(note))
+      vehicleCommandsApi.takeDrivenote(vehicleTag, TakeDrivenoteRequest(note))
     }
   }
 
@@ -1056,7 +1057,7 @@ internal class VehicleCommandsImpl(
         }
       }
     ) {
-      vehicleCommandsApi.triggerHomelink(vin, TriggerHomelinkRequest(latitude, longitude))
+      vehicleCommandsApi.triggerHomelink(vehicleTag, TriggerHomelinkRequest(latitude, longitude))
     }
   }
 
@@ -1065,7 +1066,7 @@ internal class VehicleCommandsImpl(
   ): Result<VehicleCommandResponse> {
     // Does not require Command Protocol
     return executeCommand(action = null) {
-      vehicleCommandsApi.upcomingCalendarEntries(vin, UpcomingCalendarEntriesRequest(calendarData))
+      vehicleCommandsApi.upcomingCalendarEntries(vehicleTag, UpcomingCalendarEntriesRequest(calendarData))
     }
   }
 
@@ -1091,7 +1092,7 @@ internal class VehicleCommandsImpl(
       }
     ) {
       vehicleCommandsApi.windowControl(
-        vin,
+        vehicleTag,
         WindowControlRequest(latitude, longitude, command.name.lowercase()),
       )
     }
