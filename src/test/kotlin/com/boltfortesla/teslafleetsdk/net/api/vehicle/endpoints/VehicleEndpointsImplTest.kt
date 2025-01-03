@@ -919,7 +919,7 @@ class VehicleEndpointsImplTest {
               false,
               false,
               true,
-              VehicleDataResponse.VehicleState.SoftwareUpdate(0, 2700, 1, "", " "),
+              VehicleDataResponse.VehicleState.SoftwareUpdate(0, 2700, 1, "", " ", null, null),
               VehicleDataResponse.VehicleState.SpeedLimitMode(false, 85.0, 120.0, 50.0, false),
               false,
               5,
