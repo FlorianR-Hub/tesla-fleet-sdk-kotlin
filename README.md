@@ -17,8 +17,10 @@ An implementation of the [Tesla Fleet API](https://developer.tesla.com/docs/flee
 ### Gradle
 ```kts
 dependencyResolutionManagement {
+  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
     mavenCentral()
+    maven("https://jitpack.io")
   }
 }
 
@@ -32,8 +34,8 @@ dependencies {
 <project>
   <repositories>
     <repository>
-      <id>central</id>
-      <url>https://repo1.maven.org/maven2</url>  
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>  
     </repository>
   </repositories>
   
